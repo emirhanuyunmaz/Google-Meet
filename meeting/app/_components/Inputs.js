@@ -5,6 +5,8 @@ import { useEffect, useState } from "react"
 import Dialog from "./Dialog"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import Dialog2 from "./Dialog2"
+import { useToast } from "@/components/ui/use-toast"
 
 
 export default function Inputs(){
@@ -21,7 +23,7 @@ export default function Inputs(){
     const [timeFinish , setTimeFinish ] = useState(14)
     const [userSelectedTime,setUserSelectedTime] = useState("")
     const [token,setToken] = useState("")
-
+    const { toast } = useToast()
 
     const [inputDate , setInputDate] = useState("")
     const [inputTime,setInputTime] = useState("")
@@ -101,7 +103,6 @@ export default function Inputs(){
                             timeArr.push(`${i}:${j}`)
                         }
                     }
-                    
                     j = j + Number.parseInt(timeGap)
                 }
                 i = i + 1
@@ -124,29 +125,37 @@ export default function Inputs(){
     },[search])
 
     async function handleClick(){
-        const d = new Date(inputDate)
-        let n = d.getFullYear()
-        if(d.getMonth()<10){
-            n = n +"-"+ "0"+d.getMonth() 
+        if(inputDate !== "" && userSelectedTime !== "" ){
+            
+            const d = new Date(inputDate)
+            let n = d.getFullYear()
+            if(d.getMonth()<10){
+                n = n +"-"+ "0"+d.getMonth() 
+            }else{
+                n = n + d.getMonth()
+            }
+
+            if(d.getDay<10){
+                n = n + "-" +"0"+d.getDay()
+            }else{
+                n = n + "-" +"0"+d.getDay()
+            }
+            // console.log("Date:" + n  + " Time: " +userSelectedTime);
+            
+            const r = await axios.post("http://localhost:3000",{
+                date:n,
+                startTime:userSelectedTime,
+                endTime:userSelectedTime
+            })
+            //Yönlendirme işlemi
+            window.location.href = "http://localhost:3000/auth"
         }else{
-            n = n + d.getMonth()
+            toast({
+                variant: "destructive",
+                title : "Not leave blank"
+            })
         }
 
-        if(d.getDay<10){
-            n = n + "-" + "0" +d.getDay()
-        }else{
-            n = n + "-" +"0"+d.getDay()
-        }
-        console.log("Date:" + n  + " Time: " +userSelectedTime);
-        
-        const r = await axios.post("http://localhost:3000",{
-            date:n,
-            startTime:userSelectedTime,
-            endTime:userSelectedTime
-        })
-        //Yönlendirme işlemi
-        window.location.href = "http://localhost:3000/auth"
-        // console.log(res);
      }
 
     function timeOnClick(e){
@@ -156,35 +165,26 @@ export default function Inputs(){
     
     return(<div className="">
 
-           
         <form className="flex items-start gap-5">
             <Calendar
                 mode="single"
                 selected={inputDate}
                 onSelect={setInputDate}
                 className="rounded-md border inline"
-        />            
-            <label htmlFor="">M:</label>
-            <select value={timeGap} className="border-2 rounded-md" onChange={(e) => setTimeGap(e.target.value)}>
-                {
-                    timeGapList.map((item,index) => <option key={index} value={`${item}`}>{item}</option>)
-                }
-            </select>
-            <div className=" w-64  gap-3">
+            />
+            <div className="w-64 gap-3">
                 {
                     timeList.map((item,index) => <button onClick={(e) => {
                         setUserSelectedTime(item)
                         timeOnClick(e)
                         // handleClick()
-
-                    }} className={`text-black w-24 bg-white border-2 hover:border-black focus:ring-1 focus:border-black  rounded-lg  px-5 py-2.5 me-2 mb-2  `} key={index} >{item}</button>)
+                    }} className={`text-black w-24 bg-white border-2 hover:border-black focus:ring-1 focus:border-black rounded-lg  px-5 py-2.5 me-2 mb-2 duration-300`} key={index} >{item}</button>)
                 }
             </div>
         </form>
             <div className="text-center" >
-                <button onClick={handleClick} className="bg-blue-400 text-white px-3 py-1 rounded-xl hover:bg-blue-500 duration-300 " >Add Meet</button>
-                {view && <Dialog url={search} viewControl={view}  />}
-            </div>
-                
+                <button onClick={handleClick} className=" text-black px-4 py-2 rounded-xl border-2 hover:border-black hover:text-black duration-300" >Add Meet</button>
+                {view && <Dialog2 url={search} viewControl={view}  />}
+            </div>           
     </div>)
 }

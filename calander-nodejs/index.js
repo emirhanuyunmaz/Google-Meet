@@ -73,29 +73,24 @@ app.get('/auth',
         accessType: 'offline',
         prompt: 'consent'
     }
-    
 ));
 
 app.get("/",(req,res)=> {
     console.log(control)
     let meetUrl = ""
     
-
     meetUrl =fs.readFileSync('url.json')
     meetUrl = JSON.parse(meetUrl)
-            
 
     console.log("GET::"+meetUrl.url);
     res.redirect(`http://localhost:3001?url=${meetUrl.url}`);
-    
-    
 })
 
 app.post('/',(req,res)=> {
 
-        // date : "2020-12-01",
-        // startTime : "10:59",
-        // endTime : "10:59",
+    // date : "2020-12-01",
+    // startTime : "10:59",
+    // endTime : "10:59",
     
     console.log(req.body.date);
     console.log(req.body.startTime);
@@ -117,9 +112,6 @@ app.post('/',(req,res)=> {
     })
     res.status(201).json({message:"succes"})
 })
-
-
-
 
 // app.get('/',passport.authenticate('google', {
 //     scope: ['profile', 'https://www.googleapis.com/auth/calendar'],
@@ -145,7 +137,6 @@ app.post('/',(req,res)=> {
 //                         refresh_token : tokens.refresh_token,
 //                         access_token:tokens.access_token
 //                 });
-
 //                 const meeting = new SpacesServiceClient({auth:oAuth2Client})
 //                 const r =await meeting.createSpace({})
 //                 console.log(r[0].meetingUri);
@@ -171,7 +162,6 @@ app.post('/',(req,res)=> {
 
 // app.get("/events",(req,res) => {
 //     const calendarId = req.query.calendar ?? "primary"
-    
 //     const calendar = google.calendar({version:"v3" , auth:oAuth2Client})
 //     calendar.events.list({
 //         calendarId,
