@@ -30,8 +30,8 @@ export default function Dialog2({url , viewControl}){
         // setView(false)
     }
 
-    return (view && <>
-    <Dialog open className="min-w-[600px]" >
+    return (
+    <Dialog open={view} onOpenChange={setView} className="min-w-[600px]" >
         <DialogContent className="">
           <DialogHeader>
             <DialogTitle>Meet Link</DialogTitle>
@@ -61,6 +61,5 @@ export default function Dialog2({url , viewControl}){
             </DialogClose>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
-    </>)
+      </Dialog>)
 }
